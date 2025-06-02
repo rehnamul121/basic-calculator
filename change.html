@@ -3,35 +3,121 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Responsive Calculator</title>
+<title>Realistic Cartoon Cat Calculator</title>
 <style>
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
   body {
     font-family: Arial, sans-serif;
+    background: #ffe0f0;
     margin: 0;
-    padding: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #f0f0f0;
   }
   #calculator {
     background: #fff;
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 320px; /* Restrict width on larger screens */
+    max-width: 320px;
+    text-align: center;
+    position: relative;
   }
+  /* Cat Tail */
+  .cat-tail {
+    position: absolute;
+    width: 20px;
+    height: 80px;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    bottom: 10px;
+    left: -30px;
+    transform: rotate(30deg);
+    z-index: 0;
+  }
+  /* Cat Face */
+  .cat-face {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, #fff 70%, #f0f0f0 100%);
+    border: 2px solid #000;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  /* Ears */
+  #calculator::before,
+  #calculator::after {
+    content: '';
+    position: absolute;
+    top: -35px;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border: 2px solid #000;
+    transform: rotate(45deg);
+    z-index: 1;
+  }
+  #calculator::before { left: 10px; }
+  #calculator::after { right: 10px; }
+  /* Eyes */
+  .cat-eye {
+    width: 15px;
+    height: 20px;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 30px;
+  }
+  .cat-eye.left { left: 25px; }
+  .cat-eye.right { right: 25px; }
+  /* Nose */
+  .cat-nose {
+    width: 14px;
+    height: 10px;
+    background: pink;
+    border-radius: 50%;
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  /* Mouth */
+  .cat-mouth {
+    width: 20px;
+    height: 10px;
+    border-bottom: 2px solid #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  /* Whiskers */
+  .whisker {
+    position: absolute;
+    width: 30px;
+    height: 2px;
+    background: #000;
+    top: 60px;
+  }
+  .whisker.left1 { left: -30px; transform: rotate(10deg); }
+  .whisker.left2 { left: -30px; transform: rotate(-10deg); top: 65px; }
+  .whisker.right1 { right: -30px; transform: rotate(-10deg); }
+  .whisker.right2 { right: -30px; transform: rotate(10deg); top: 65px; }
+
   #result {
     width: 100%;
     font-size: 1.5rem;
     text-align: right;
     padding: 0.5rem;
     margin-bottom: 1rem;
+    border: 2px solid #f9a825;
+    border-radius: 0.3rem;
   }
   .buttons {
     display: grid;
@@ -47,61 +133,71 @@
     cursor: pointer;
     transition: background 0.3s;
   }
-  button:hover {
-    background: #d0d0d0;
-  }
-  button.operator {
-    background: #f9a825;
-    color: #fff;
-  }
-  button.operator:hover {
-    background: #f57f17;
-  }
-  button.equals {
-    background: #43a047;
-    color: #fff;
-  }
-  button.equals:hover {
-    background: #2e7d32;
-  }
-  button.clear {
-    background: #e53935;
-    color: #fff;
-  }
-  button.clear:hover {
-    background: #b71c1c;
-  }
+  button:hover { background: #d0d0d0; }
+  button.operator { background: #f9a825; color: #fff; }
+  button.operator:hover { background: #f57f17; }
+  button.equals { background: #43a047; color: #fff; }
+  button.equals:hover { background: #2e7d32; }
+  button.clear { background: #e53935; color: #fff; }
+  button.clear:hover { background: #b71c1c; }
 </style>
 </head>
 <body>
   <div id="calculator">
+    <div class="cat-tail"></div>
+    <div class="cat-face" id="catFace">
+      <div class="cat-eye left"></div>
+      <div class="cat-eye right"></div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+      <div class="whisker left1"></div>
+      <div class="whisker left2"></div>
+      <div class="whisker right1"></div>
+      <div class="whisker right2"></div>
+    </div>
     <input type="text" id="result" disabled />
     <div class="buttons">
-      <button onclick="append('7')">7</button>
-      <button onclick="append('8')">8</button>
-      <button onclick="append('9')">9</button>
-      <button class="operator" onclick="append('/')">/</button>
+      <button onclick="pressButton('7')">7</button>
+      <button onclick="pressButton('8')">8</button>
+      <button onclick="pressButton('9')">9</button>
+      <button class="operator" onclick="pressButton('/')">/</button>
 
-      <button onclick="append('4')">4</button>
-      <button onclick="append('5')">5</button>
-      <button onclick="append('6')">6</button>
-      <button class="operator" onclick="append('*')">*</button>
+      <button onclick="pressButton('4')">4</button>
+      <button onclick="pressButton('5')">5</button>
+      <button onclick="pressButton('6')">6</button>
+      <button class="operator" onclick="pressButton('*')">*</button>
 
-      <button onclick="append('1')">1</button>
-      <button onclick="append('2')">2</button>
-      <button onclick="append('3')">3</button>
-      <button class="operator" onclick="append('-')">-</button>
+      <button onclick="pressButton('1')">1</button>
+      <button onclick="pressButton('2')">2</button>
+      <button onclick="pressButton('3')">3</button>
+      <button class="operator" onclick="pressButton('-')">-</button>
 
-      <button onclick="append('0')">0</button>
-      <button onclick="append('.')">.</button>
-      <button class="equals" onclick="calculate()">=</button>
-      <button class="operator" onclick="append('+')">+</button>
+      <button onclick="pressButton('0')">0</button>
+      <button onclick="pressButton('.')">.</button>
+      <button class="equals" onclick="pressButton('=')">=</button>
+      <button class="operator" onclick="pressButton('+')">+</button>
 
-      <button class="clear" onclick="clearResult()">C</button>
+      <button class="clear" onclick="pressButton('C')">C</button>
     </div>
   </div>
 
   <script>
+    function pressButton(value) {
+      // Animate the cat face on button click
+      const catFace = document.getElementById('catFace');
+      catFace.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        catFace.style.transform = 'scale(1)';
+      }, 150);
+
+      if (value === 'C') {
+        clearResult();
+      } else if (value === '=') {
+        calculate();
+      } else {
+        append(value);
+      }
+    }
     function append(value) {
       document.getElementById('result').value += value;
     }
